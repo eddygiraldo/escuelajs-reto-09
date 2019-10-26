@@ -14,8 +14,8 @@ class MongoConnect {
   }
 
   connect() {
-    if (!MongoLib.connection) {
-      MongoLib.connection = new Promise((resolve, reject) => {
+    if (!MongoConnect.connection) {
+      MongoConnect.connection = new Promise((resolve, reject) => {
         this.client.connect(err => {
           if (err) {
             reject(err);
@@ -25,7 +25,20 @@ class MongoConnect {
         });
       });
     }
-    return MongoLib.connection;
+    return MongoConnect.connection;
+  }
+
+  getAll(collection, query) {
+    return this.connect().then(db => {
+      console.log('Get mongo')
+      return db.collection(collection).find(query).toArray();
+    })
+  }
+
+  create(collection, data) {
+    return this.connect().then(db => {
+      return db.collection(collection).insertOne(data);
+    }).then(result => result.insertedId)
   }
 }
 

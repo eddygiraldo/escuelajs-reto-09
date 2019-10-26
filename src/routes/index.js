@@ -19,8 +19,21 @@ const platziStore = (app) => {
   });
 
   router.get('/products', async (req, res, next) => {
-    const storeProducts = await productService.getProducts()
-    res.status(200).json(storeProducts);
+    const { tags } = req.query;
+    const storeProducts = await productService.getProducts(tags);
+    res.status(200).json({
+      data: storeProducts,
+      message: 'products listed',
+    });
+  });
+
+  router.post('/products', async (req, res, next) => {
+    const { body:product } = req;
+    const createProductId = await productService.createProduct(product);
+    res.status(200).json({
+      data: createProductId,
+      message: 'products created',
+    });
   });
 
   router.get('*', (req, res) => {
